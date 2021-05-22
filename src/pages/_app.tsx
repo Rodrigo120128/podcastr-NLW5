@@ -1,7 +1,19 @@
-import "../styles/global.css"
+import GlobalStyle from "../styles/global"
+import { Container, Main } from "../styles/app"
+import Header from "../components/Header"
+import Player from "../components/Player"
 
-const MyApp = ({ Component, pageProps }) => {
-  return <Component {...pageProps} />
-}
+const App = ({ Component, pageProps }) => (
+  <>
+    <GlobalStyle />
+    <Container>
+      <Main>
+        <Header />
+        <Component {...pageProps} />
+      </Main>
+      <Player />
+    </Container>
+  </>
+)
 
-export default MyApp
+export default App
