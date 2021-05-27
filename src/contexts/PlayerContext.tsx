@@ -5,6 +5,7 @@ type Episode = {
   members: string
   thumbnail: string
   duration: number
+  durationAsString: string
   url: string
 }
 
