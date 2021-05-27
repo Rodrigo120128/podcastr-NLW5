@@ -1,10 +1,13 @@
 import { GetStaticProps } from "next"
 import Link from "next/link"
-import api from "../services/api"
+import { useContext } from "react"
 import { format, parseISO } from "date-fns"
 import ptBR from "date-fns/locale/pt-BR"
+
+import api from "../services/api"
 import convertSecToTimeString from "../utils/convertSecToTimeString"
-import GreenPlayButton from "../components/GreenPlayButton"
+import { PlayerContext } from "../contexts/PlayerContext"
+
 import {
   Container,
   LatestEpisodes,
@@ -24,6 +27,7 @@ import {
   Field,
   InfoField,
   Episode,
+  PlayButton,
 } from "../styles/home"
 
 type Episodes = {
@@ -44,6 +48,8 @@ type HomeProps = {
 }
 
 const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
+  const { play } = useContext(PlayerContext)
+
   return (
     <Container>
       <LatestEpisodes>
@@ -69,7 +75,9 @@ const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
                   <Span>{episode.members}</Span>
                   <DurationAndButton>
                     <Span>{episode.durationAsString}</Span>
-                    <GreenPlayButton />
+                    <PlayButton onClick={() => play(episode)}>
+                      <img src="play-green.svg" alt="Tocar episódio" />
+                    </PlayButton>
                   </DurationAndButton>
                 </InfoFooter>
               </InfoEpisode>
@@ -118,7 +126,9 @@ const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
                   <InfoField>{episode.durationAsString}</InfoField>
                 </Field>
                 <Field>
-                  <GreenPlayButton />
+                  <PlayButton onClick={() => play(episode)}>
+                    <img src="play-green.svg" alt="Tocar episódio" />
+                  </PlayButton>
                 </Field>
               </tr>
             ))}

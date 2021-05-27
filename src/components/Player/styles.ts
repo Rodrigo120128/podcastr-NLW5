@@ -10,8 +10,8 @@ export const Container = styled.div`
   color: var(--white);
 
   width: 18.5rem;
-  height: calc(100vh - 6rem);
-  padding: 3rem 4rem;
+  height: calc(100vh - 4rem);
+  padding: 2rem 4rem;
 `
 
 export const Header = styled.header`
@@ -31,8 +31,8 @@ export const EmptyPlayer = styled.div`
   align-items: center;
   justify-content: center;
 
-  width: 60%;
-  height: 10rem;
+  width: 50%;
+  height: 8.3rem;
   padding: 4rem;
 
   border-radius: 1.5rem;
@@ -47,6 +47,30 @@ export const EmptyPlayer = styled.div`
   text-align: center;
 `
 
+export const CurrentEpisode = styled.div`
+  width: 50%;
+  height: 8.3rem;
+  padding: 4rem;
+
+  border-radius: 1.5rem;
+
+  background-image: url(${props => props.imageURL});
+  background-size: cover;
+`
+
+export const Title = styled.span`
+  width: 80%;d
+  font: 600 0.875rem Lexend, sans-serif;
+  text-align: center;
+`
+
+export const Members = styled.span`
+  width: 80%;
+  font-size: 0.75rem;
+  text-align: center;
+  opacity: 0.7;
+`
+
 export const Footer = styled.footer`
   display: flex;
   flex-direction: column;
@@ -55,15 +79,17 @@ export const Footer = styled.footer`
 export const TimeBar = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
 
   gap: 0.8rem;
 `
 export const Span = styled.span`
   color: var(--white);
-  font-size: 0.875rem;
+  font-size: 0.8rem;
 `
+
 export const ProgressBar = styled.div`
-  width: 100%;
+  width: 60%;
   height: 4px;
   border-radius: 2px;
 
@@ -75,22 +101,31 @@ export const Buttons = styled.div`
   align-items: center;
   justify-content: center;
 
-  margin-top: 2.5rem;
+  margin-top: 1.5rem;
 
-  gap: 1.5rem;
+  gap: 1rem;
 `
 export const Button = styled.button`
   border: 0;
   font-size: 0;
   background: transparent;
+
+  &:disabled {
+    cursor: default;
+  }
 `
 
 export const PlayButton = styled.button`
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
 
   background: var(--purple-400);
+  font-size: 0;
 
   border: 0;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
+
+  &:disabled {
+    cursor: default;
+  }
 `
