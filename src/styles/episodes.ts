@@ -1,14 +1,20 @@
 import styled from "styled-components"
 
 export const Container = styled.div`
-  max-width: 40rem;
-  padding: 3rem 2rem;
+  padding: 3rem 0;
+
+  overflow-y: scroll;
+  height: calc(100vh - 12.55rem);
+`
+
+export const Content = styled.div`
+  width: 40rem;
   margin: 0 auto;
 `
 
 export const ThumbnailContainer = styled.div`
   position: relative;
-  width: 40rem;
+
   height: 11rem;
   background-image: url(${props => props.image});
   background-size: cover;

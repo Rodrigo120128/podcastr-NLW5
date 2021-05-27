@@ -1,8 +1,10 @@
-import { useContext, useEffect, useRef } from "react"
-import { PlayerContext } from "../../contexts/PlayerContext"
+import { useEffect, useRef, useState } from "react"
 import Slider from "rc-slider"
-
 import "rc-slider/assets/index.css"
+
+import { usePlayer } from "../../contexts/PlayerContext"
+import convertSecToTimeString from "../../utils/convertSecToTimeString"
+
 import {
   Container,
   Header,
@@ -25,9 +27,16 @@ const Player = () => {
     episodeList,
     currentEpisodeIndex,
     isPlaying,
+    isLooping,
     togglePlay,
+    toggleLoop,
+    toggleShuffling,
     setPlayingState,
-  } = useContext(PlayerContext)
+    playPrevious,
+    playNext,
+    clearPlayingState,
+  } = usePlayer()
+
   const episode = episodeList[currentEpisodeIndex]
 
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -41,6 +50,29 @@ const Player = () => {
       audioRef.current.pause()
     }
   }, [isPlaying])
+
+  const [progress, setProgress] = useState(0)
+
+  const setupProgressListener = () => {
+    audioRef.current.currentTime = 0
+
+    audioRef.current.addEventListener("timeupdate", () => {
+      setProgress(Math.floor(audioRef.current.currentTime))
+    })
+  }
+
+  const handleSeek = (amount: number) => {
+    audioRef.current.currentTime = amount
+    setProgress(amount)
+  }
+
+  const handleEpisodeEnded = () => {
+    if (currentEpisodeIndex < episodeList.length - 1) {
+      playNext()
+    } else {
+      clearPlayingState()
+    }
+  }
 
   return (
     <Container>
@@ -70,16 +102,22 @@ const Player = () => {
           ref={audioRef}
           src={episode.url}
           autoPlay
+          loop={isLooping}
           onPlay={() => setPlayingState(true)}
           onPause={() => setPlayingState(false)}
+          onLoadedMetadata={setupProgressListener}
+          onEnded={handleEpisodeEnded}
         />
       )}
 
       <Footer>
         <TimeBar>
-          <Span>00:00</Span>
+          <Span>{convertSecToTimeString(progress)}</Span>
           {episode ? (
             <Slider
+              max={episode.duration}
+              value={progress}
+              onChange={handleSeek}
               trackStyle={{ backgroundColor: "#04d361" }}
               railStyle={{ backgroundColor: "#9f75ff" }}
               handleStyle={{ borderColor: "#04d361", borderWidth: 4 }}
@@ -87,15 +125,25 @@ const Player = () => {
           ) : (
             <ProgressBar />
           )}
-          <Span>00:00</Span>
+          <Span>{episode ? episode.durationAsString : "00:00:00"}</Span>
         </TimeBar>
 
         <Buttons>
-          <Button disabled={!episode}>
-            <img width={"70%"} src="/shuffle.svg" alt="Embaralhar" />
+          <Button disabled={!episode || episodeList.length == 1}>
+            <img
+              onClick={toggleShuffling}
+              width={"70%"}
+              src="/shuffle.svg"
+              alt="Embaralhar"
+            />
           </Button>
           <Button disabled={!episode}>
-            <img width={"70%"} src="/play-previous.svg" alt="Tocar anterior" />
+            <img
+              onClick={playPrevious}
+              width={"70%"}
+              src="/play-previous.svg"
+              alt="Tocar anterior"
+            />
           </Button>
           <PlayButton onClick={togglePlay} disabled={!episode}>
             {isPlaying ? (
@@ -105,10 +153,20 @@ const Player = () => {
             )}
           </PlayButton>
           <Button disabled={!episode}>
-            <img width={"70%"} src="/play-next.svg" alt="Tocar próximo" />
+            <img
+              onClick={playNext}
+              width={"70%"}
+              src="/play-next.svg"
+              alt="Tocar próximo"
+            />
           </Button>
           <Button disabled={!episode}>
-            <img width={"70%"} src="/repeat.svg" alt="Repetir" />
+            <img
+              onClick={toggleLoop}
+              width={"70%"}
+              src="/repeat.svg"
+              alt="Repetir"
+            />
           </Button>
         </Buttons>
       </Footer>

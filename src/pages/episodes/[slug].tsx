@@ -1,9 +1,13 @@
+import { GetStaticPaths, GetStaticProps } from "next"
+import Head from "next/head"
+import Link from "next/link"
 import ptBR from "date-fns/locale/pt-BR"
 import { format, parseISO } from "date-fns"
+
 import convertSecToTimeString from "../../utils/convertSecToTimeString"
-import { GetStaticPaths, GetStaticProps } from "next"
-import Link from "next/link"
 import api from "../../services/api"
+import { usePlayer } from "../../contexts/PlayerContext"
+
 import {
   Container,
   ThumbnailContainer,
@@ -13,6 +17,7 @@ import {
   Title,
   Span,
   Description,
+  Content,
 } from "../../styles/episodes"
 
 type EpisodeProps = {
@@ -30,29 +35,38 @@ type EpisodeProps = {
 }
 
 const Episode = ({ episode }: EpisodeProps) => {
+  const { play } = usePlayer()
+
   return (
     <Container>
-      <ThumbnailContainer image={episode.thumbnail}>
-        <Link href="/">
-          <HomeButton>
-            <img src="/arrow-left.svg" alt="Voltar" />
-          </HomeButton>
-        </Link>
-        <PlayButton>
-          <img src="/play.svg" />
-        </PlayButton>
-      </ThumbnailContainer>
+      <Content>
+        <Head>
+          <title>{episode.title} | Podcastr</title>
+        </Head>
+        <ThumbnailContainer image={episode.thumbnail}>
+          <Link href="/">
+            <HomeButton>
+              <img src="/arrow-left.svg" alt="Voltar" />
+            </HomeButton>
+          </Link>
+          <PlayButton onClick={() => play(episode)}>
+            <img src="/play.svg" />
+          </PlayButton>
+        </ThumbnailContainer>
 
-      <Header>
-        <Title>{episode.title}</Title>
-        <div>
-          <Span>{episode.members}</Span>
-          <Span>{episode.publishedAt}</Span>
-          <Span>{episode.durationAsString}</Span>
-        </div>
-      </Header>
+        <Header>
+          <Title>{episode.title}</Title>
+          <div>
+            <Span>{episode.members}</Span>
+            <Span>{episode.publishedAt}</Span>
+            <Span>{episode.durationAsString}</Span>
+          </div>
+        </Header>
 
-      <Description dangerouslySetInnerHTML={{ __html: episode.description }} />
+        <Description
+          dangerouslySetInnerHTML={{ __html: episode.description }}
+        />
+      </Content>
     </Container>
   )
 }

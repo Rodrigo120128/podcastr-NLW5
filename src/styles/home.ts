@@ -14,7 +14,6 @@ export const LatestEpisodes = styled.div`
 
 export const Header = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
 `
 
@@ -23,7 +22,6 @@ export const Tag = styled.h2`
   margin-bottom: 1.5rem;
 `
 
-export const SeeAll = styled.a``
 export const CardContainer = styled.div`
   display: flex;
   gap: 1.5rem;

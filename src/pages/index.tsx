@@ -1,12 +1,12 @@
 import { GetStaticProps } from "next"
 import Link from "next/link"
-import { useContext } from "react"
+import Head from "next/head"
 import { format, parseISO } from "date-fns"
 import ptBR from "date-fns/locale/pt-BR"
 
 import api from "../services/api"
 import convertSecToTimeString from "../utils/convertSecToTimeString"
-import { PlayerContext } from "../contexts/PlayerContext"
+import { usePlayer } from "../contexts/PlayerContext"
 
 import {
   Container,
@@ -19,7 +19,6 @@ import {
   InfoFooter,
   Span,
   Tag,
-  SeeAll,
   Thumb,
   DurationAndButton,
   AllEpisodes,
@@ -48,17 +47,21 @@ type HomeProps = {
 }
 
 const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
-  const { play } = useContext(PlayerContext)
+  const { playList } = usePlayer()
+
+  const episodeList = [...latestEpisodes, ...allEpisodes]
 
   return (
     <Container>
+      <Head>
+        <title>Home | Podcastr</title>
+      </Head>
       <LatestEpisodes>
         <Header>
           <Tag>Últimos lançamentos</Tag>
-          <SeeAll>Ver Todos</SeeAll>
         </Header>
         <CardContainer>
-          {latestEpisodes.map(episode => (
+          {latestEpisodes.map((episode, index) => (
             <Card key={episode.id}>
               <Thumb
                 width="6rem"
@@ -75,7 +78,7 @@ const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
                   <Span>{episode.members}</Span>
                   <DurationAndButton>
                     <Span>{episode.durationAsString}</Span>
-                    <PlayButton onClick={() => play(episode)}>
+                    <PlayButton onClick={() => playList(episodeList, index)}>
                       <img src="play-green.svg" alt="Tocar episódio" />
                     </PlayButton>
                   </DurationAndButton>
@@ -100,7 +103,7 @@ const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
             </tr>
           </thead>
           <tbody>
-            {allEpisodes.map(episode => (
+            {allEpisodes.map((episode, index) => (
               <tr key={episode.id}>
                 <Field>
                   <Thumb
@@ -126,7 +129,11 @@ const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
                   <InfoField>{episode.durationAsString}</InfoField>
                 </Field>
                 <Field>
-                  <PlayButton onClick={() => play(episode)}>
+                  <PlayButton
+                    onClick={() =>
+                      playList(episodeList, index + latestEpisodes.length)
+                    }
+                  >
                     <img src="play-green.svg" alt="Tocar episódio" />
                   </PlayButton>
                 </Field>
